@@ -7,31 +7,44 @@
 
 #include <QtNetwork/QNetworkAccessManager>
 
-postReq2::postReq2()
+PostRequest::PostRequest()
 {
 
     qDebug() << "Hej, I work :)";
 
-    QUrl serviceUrl = QUrl("http://payment-app-mrl.herokuapp.com/post");
+    //Set up HTTP POST request destination
+
+    QUrl serviceUrl = QUrl("https://payment-app-mrl.herokuapp.com/post");
     QNetworkRequest networkRequest(serviceUrl);
 
+    //Set up data to send
+
     QJsonObject json;
-    json.insert("name", "<script>alert('fuckoff')</script>");
-    json.insert("text", "HULLO");
+    json.insert("name", "PSSSSSS be invisible in wireshark :)");
+    json.insert("text", "Plz be invisible in wireshark :)");
     QJsonDocument jsonDoc(json);
     QByteArray postData = jsonDoc.toJson();
 
-//    QByteArray postData = "{\"name\": \"Jack\", \"text\": \"HULLO\"}";
+    //HTTP POST Headers
+
     QByteArray postDataSize = QByteArray::number(postData.size());
     networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     networkRequest.setHeader(QNetworkRequest::ContentLengthHeader, postDataSize);
 
+    //HTTPS Config
+
+//    QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+//    config.setProtocol(QSsl::TlsV1_2);
+//    networkRequest.setSslConfiguration(config);
+
+    //NAM and slots (SLOT will run when connection is done, has to be defined)
+
     QNetworkAccessManager *networkManager = new QNetworkAccessManager();
     connect(networkManager, SIGNAL(finished(QNetworkReply*)), SLOT(serviceRequestFinish(QNetworkReply*)));
 
-    networkManager->post(networkRequest, postData);
+    //Send POST request
 
-    QNetworkReply *reply = networkManager->post(networkRequest, postData);
+    networkManager->post(networkRequest, postData);
 
 //    curl -X POST -d "{\"name\": \"Jack\", \"text\": \"HULLO\"}" -H "Content-Type: application/json" localhost:3000/post
 
@@ -61,7 +74,7 @@ postReq2::postReq2()
 
 }
 
-void postReq2::serviceRequestFinish(QNetworkReply* rep) {
+void PostRequest::serviceRequestFinish(QNetworkReply* rep) {
     qDebug() << "POST REQUEST SENT";
     qDebug() << rep->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug() << "Reply from server: " << rep->readAll();

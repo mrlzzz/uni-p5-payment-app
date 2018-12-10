@@ -88,6 +88,25 @@ void testRSA(QByteArray plain){
 
 }
 
+void testAES(){
+    qDebug() << "Testing AES...";
+
+    Cipher cWrapper;
+
+    QString passphrase = "secret";
+    QByteArray plain = "0000010010010000000101001101110010111111111111111111101001101111";
+
+    qDebug() << "Im here";
+
+    QByteArray encrypted = cWrapper.encryptAES(passphrase.toLatin1(), plain);
+    QByteArray decrypted = cWrapper.decryptAES(passphrase.toLatin1(), encrypted);
+
+
+    qDebug() << "Plain: " << plain;
+    qDebug() << "Encrypted: " << encrypted.toHex();
+    qDebug() << "Decrypted: " << decrypted;
+
+}
 
 void pinEncode() {
     /*
@@ -196,8 +215,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 //    Terminal w;
 //    w.show();
+    testAES();
 
-    postReq2 *post = new postReq2();
-//pinEncode();
+//    postReq2 *post = new postReq2();
+//    pinEncode();
     return a.exec();
 }

@@ -28,16 +28,14 @@ SOURCES += \
         main.cpp \
         terminal.cpp \
     cipher.cpp \
-    http.cpp \
-    postreq.cpp \
-    postreq2.cpp
+    postreq2.cpp \
+    transblock.cpp
 
 HEADERS += \
         terminal.h \
     cipher.h \
-    http.h \
-    postreq.h \
-    postreq2.h
+    postreq2.h \
+    transblock.h
 
 FORMS += \
         terminal.ui

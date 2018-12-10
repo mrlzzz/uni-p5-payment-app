@@ -6,10 +6,10 @@
 
 
 
-class postReq2 : public QObject {
+class PostRequest : public QObject {
     Q_OBJECT
 public:
-    postReq2();
+    PostRequest();
 public slots:
     void serviceRequestFinish(QNetworkReply*);
 };
