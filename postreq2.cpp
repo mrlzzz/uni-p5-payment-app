@@ -18,10 +18,12 @@ PostRequest::PostRequest()
     QNetworkRequest networkRequest(serviceUrl);
 
     //Set up data to send
+    QDate date = date.currentDate();
+    QTime time = time.currentTime();
 
     QJsonObject json;
-    json.insert("name", "PSSSSSS be invisible in wireshark :)");
-    json.insert("text", "Plz be invisible in wireshark :)");
+    json.insert("timestamp", date.toString() + " " + time.toString());
+    json.insert("pin", "1234");
     QJsonDocument jsonDoc(json);
     QByteArray postData = jsonDoc.toJson();
 
@@ -78,4 +80,7 @@ void PostRequest::serviceRequestFinish(QNetworkReply* rep) {
     qDebug() << "POST REQUEST SENT";
     qDebug() << rep->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug() << "Reply from server: " << rep->readAll();
+
+
+
 }

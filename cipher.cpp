@@ -108,9 +108,7 @@ QByteArray Cipher::decryptRSA(RSA *key, QByteArray &data)
 QByteArray Cipher::encryptAES(QByteArray passphrase, QByteArray &data)
 {
 
-    qDebug() << "I am here";
     QByteArray msalt = randomBytes(SALTSIZE);
-    qDebug() << "I am here2";
 
     int rounds = 1;
     unsigned char key[KEYSIZE];
@@ -129,16 +127,12 @@ QByteArray Cipher::encryptAES(QByteArray passphrase, QByteArray &data)
         qCritical() << "EVP_BytesToKey() error: " << ERR_error_string(ERR_get_error(), NULL);
         return QByteArray();
     }
-
     
     EVP_CIPHER_CTX *ctx;
     ctx = EVP_CIPHER_CTX_new();
 
-
     char *input = data.data();
-    char *out;
     int len = data.size();
-
     int c_len = len + AES_BLOCK_SIZE;
     int f_len = 0;
 
@@ -150,30 +144,21 @@ QByteArray Cipher::encryptAES(QByteArray passphrase, QByteArray &data)
         return QByteArray();
     }
 
-    qDebug() << "Ciphertext1: " << ciphertext;
-
-
-    // update ciphertext, c_len is filled with the length of ciphertext generated,
-    // len is the size of plaintext in bytes
+    // Update ciphertext, input is filled with the length of ciphertext generated,
+    // Len is the size of plaintext in bytes
     if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, (unsigned char*)input, len)){
         qCritical() << "EVP_EncryptUpdate() failed: " << ERR_error_string(ERR_get_error(), NULL);
         return QByteArray();
     }
 
-    qDebug() << "Ciphertext2: " << &ciphertext;
-
-    /* update ciphertext with the final remaining bytes */
+    /* Update ciphertext with the final remaining bytes */
     if(1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len)){
         qCritical() << "EVP_EncryptFinal_ex() failed: " << ERR_error_string(ERR_get_error(), NULL);
         return QByteArray();
     }
 
-
-    qDebug() << "Ciphertext3: " << &ciphertext;
-
-
     len = c_len + f_len;
-    out = (char*)ciphertext;
+
     EVP_CIPHER_CTX_free(ctx);
 
     QByteArray encrypted = QByteArray(reinterpret_cast<char*>(ciphertext), len);
@@ -181,6 +166,8 @@ QByteArray Cipher::encryptAES(QByteArray passphrase, QByteArray &data)
     finished.append("Salted__");
     finished.append(msalt);
     finished.append(encrypted);
+
+    qDebug() << finished;
 
     free(ciphertext);
     return finished;

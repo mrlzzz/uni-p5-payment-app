@@ -8,9 +8,11 @@
 
 
 Terminal::Terminal(QWidget *parent) : QMainWindow(parent), ui(new Ui::Terminal) {
-    ui->setupUi(this);
-    tBlock.setTerminalID("TERXXAA0001");
 
+    ui->setupUi(this);
+
+    //Transportation Block created
+    tBlock.setTerminalID("TERXXAA0001");
 
     //CREATE AND ASSIGN NUM BUTTONS
 
@@ -40,17 +42,16 @@ Terminal::Terminal(QWidget *parent) : QMainWindow(parent), ui(new Ui::Terminal) 
 }
 
 void Terminal::NumPressed() {
+
     QPushButton *button = (QPushButton *)sender();
     QString butVal = button->text();
     QString displayVal = ui->Display->text();
-
 
     if((displayVal + butVal).size() <= 4){
         ui->Display->setText(displayVal + butVal);
     }
 
     ui->DisplayLog->appendPlainText("Button " + butVal + " has been pressed.");
-
 }
 
 void Terminal::ClearPressed() {

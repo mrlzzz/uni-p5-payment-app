@@ -14,8 +14,6 @@
 
 using namespace std;
 
-
-
 QByteArray getPublicKey(){
     QByteArray testPublicKey;
 
@@ -66,6 +64,42 @@ QByteArray getPrivateKey(){
     return testPrivateKey;
 }
 
+bool encryptCombined() {
+    Cipher cWrapper;
+
+    QByteArray key = getPublicKey();
+    RSA* publickey = cWrapper.getPublicKey(key);
+
+    QByteArray passphrase = cWrapper.randomBytes(8).toBase64();
+    QByteArray encryptedKey = cWrapper.encryptRSA(publickey, passphrase);
+
+    qDebug() << "EncryptedKey" << encryptedKey;
+
+    //Encrypt the data
+
+    QByteArray plain = "0000010010010000000101001101110010111111111111111111101001101111";
+    QByteArray encrypted = cWrapper.encryptAES(passphrase, plain);
+
+    QString filename = "test.enc";
+    QFile f(filename);
+    if(!f.open(QFile::WriteOnly)){
+        qCritical() << "Could not open; " << filename;
+        return false;
+    }
+
+    qDebug() << "Encrypted Key Len: " << encryptedKey.length();
+
+    QByteArray encryptedData;
+    encryptedData.append(encryptedKey);
+    encryptedData.append(encrypted);
+    f.write(encryptedData);
+    f.close();
+
+    qDebug() << "Encryption finished!";
+
+    return true;
+}
+
 void testRSA(QByteArray plain){
     qDebug() << "Loading keys...";
     QByteArray testPrivateKey = getPrivateKey();
@@ -74,18 +108,14 @@ void testRSA(QByteArray plain){
     Cipher cWrapper;
 
     RSA* publicKey = cWrapper.getPublicKey(testPublicKey);
-
     RSA* privateKey = cWrapper.getPrivateKey(testPrivateKey);
-
 
     QByteArray encrypted = cWrapper.encryptRSA(publicKey, plain);
     QByteArray decrypted = cWrapper.decryptRSA(privateKey, encrypted);
 
-
     qDebug() << "Plain: " << plain;
     qDebug() << "Encrypted: " << encrypted.toHex();
     qDebug() << "Decrypted: " << decrypted;
-
 }
 
 void testAES(){
@@ -95,17 +125,12 @@ void testAES(){
 
     QString passphrase = "secret";
     QByteArray plain = "0000010010010000000101001101110010111111111111111111101001101111";
-
-    qDebug() << "Im here";
-
     QByteArray encrypted = cWrapper.encryptAES(passphrase.toLatin1(), plain);
     QByteArray decrypted = cWrapper.decryptAES(passphrase.toLatin1(), encrypted);
-
 
     qDebug() << "Plain: " << plain;
     qDebug() << "Encrypted: " << encrypted.toHex();
     qDebug() << "Decrypted: " << decrypted;
-
 }
 
 void pinEncode() {
@@ -215,9 +240,9 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 //    Terminal w;
 //    w.show();
-    testAES();
-
-//    postReq2 *post = new postReq2();
+//    testAES();
+//    encryptCombined();
+    PostRequest *post = new PostRequest();
 //    pinEncode();
     return a.exec();
 }
