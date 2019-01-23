@@ -37,7 +37,14 @@ QString TransBlock::getCurrency(){
 QString TransBlock::getTerminalID(){
     return terminalID;
 }
+QString TransBlock::getPAN1(){
+
+
+    return "5270-****-****-7748";
+}
 QString TransBlock::getPAN(){
+
+
     return PAN;
 }
 QString TransBlock::getPIN(){

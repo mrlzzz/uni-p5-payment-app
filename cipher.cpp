@@ -108,8 +108,8 @@ QByteArray Cipher::decryptRSA(RSA *key, QByteArray &data)
 QByteArray Cipher::encryptAES(QByteArray passphrase, QByteArray &data)
 {
 
-    QByteArray msalt = randomBytes(SALTSIZE);
-
+    QByteArray msalt = "000111";
+    qDebug() << "MSALT IS HERE: " + msalt;
     int rounds = 1;
     unsigned char key[KEYSIZE];
     unsigned char iv[IVSIZE];

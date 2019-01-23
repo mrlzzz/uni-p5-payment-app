@@ -101,7 +101,6 @@ bool encryptCombined() {
 }
 
 void testRSA(QByteArray plain){
-    qDebug() << "Loading keys...";
     QByteArray testPrivateKey = getPrivateKey();
     QByteArray testPublicKey = getPublicKey();
 
@@ -113,136 +112,141 @@ void testRSA(QByteArray plain){
     QByteArray encrypted = cWrapper.encryptRSA(publicKey, plain);
     QByteArray decrypted = cWrapper.decryptRSA(privateKey, encrypted);
 
-    qDebug() << "Plain: " << plain;
+    qDebug() << "Plaintext: " << plain;
     qDebug() << "Encrypted: " << encrypted.toHex();
     qDebug() << "Decrypted: " << decrypted;
 }
 
-void testAES(){
-    qDebug() << "Testing AES...";
+//void testAES(QByteArray plain){
+//    qDebug() << "Testing AES...";
 
-    Cipher cWrapper;
+//    Cipher cWrapper;
 
-    QString passphrase = "secret";
-    QByteArray plain = "0000010010010000000101001101110010111111111111111111101001101111";
-    QByteArray encrypted = cWrapper.encryptAES(passphrase.toLatin1(), plain);
-    QByteArray decrypted = cWrapper.decryptAES(passphrase.toLatin1(), encrypted);
+//    QString passphrase = "secret";
+//    QByteArray encrypted = cWrapper.encryptAES(passphrase.toLatin1(), plain);
+//    QByteArray decrypted = cWrapper.decryptAES(passphrase.toLatin1(), encrypted);
 
-    qDebug() << "Plain: " << plain;
-    qDebug() << "Encrypted: " << encrypted.toHex();
-    qDebug() << "Decrypted: " << decrypted;
-}
+//    qDebug() << "Plain: " << plain;
+//    qDebug() << "Encrypted: " << encrypted.toHex();
+//    qDebug() << "Decrypted: " << decrypted;
+//}
 
-void pinEncode() {
-    /*
-        1. Grab PIN from input.
-        2. Encode each digit to binary (nibbles - four bits format)
-        3. Put into xorPIN format
+//void pinEncode() {
+//    /*
+//        1. Grab PIN from input.
+//        2. Encode each digit to binary (nibbles - four bits format)
+//        3. Put into xorPIN format
 
-        ## xorPIN is 64bit number used to encode PIN block
-        ## xorPIN is used to be xored with xorPAN
-        ##
-        ## xorPIN = | 0000 | 0100 | XXXX | XXXX | XXXX | XXXX | 1111 | ...
-        ##
-        ## Format 0 | num of PIN digits | PIN digit 1 | PIN digit 2 | PIN digit 3 | PIN digit 4 | fill 1s x10 | ...
-    */
+//        ## xorPIN is 64bit number used to encode PIN block
+//        ## xorPIN is used to be xored with xorPAN
+//        ##
+//        ## xorPIN = | 0000 | 0100 | XXXX | XXXX | XXXX | XXXX | 1111 | ...
+//        ##
+//        ## Format 0 | num of PIN digits | PIN digit 1 | PIN digit 2 | PIN digit 3 | PIN digit 4 | fill 1s x10 | ...
+//    */
 
-    QString pinNumber = "9015";
-    QByteArray xorPIN;
-    xorPIN.append("00000100");
-    QString pinDigit;
+//    QString pinNumber = "1234";
 
-    for(int i = 0 ; i < pinNumber.size() ; i++){
-        pinDigit = QString::number(pinNumber.at(i).digitValue(), 2);
-        switch (pinDigit.size()) {
-            case 1:
-                pinDigit = "000" + pinDigit;
-                break;
-            case 2:
-                pinDigit = "00" + pinDigit;
-                break;
-            case 3:
-                pinDigit = "0" + pinDigit;
-                break;
-        }
-        xorPIN.append(pinDigit);
-    }
-    xorPIN.append("1111111111111111111111111111111111111111");
+//    qDebug() << "PIN before encoding: " << pinNumber;
 
-    /*
-        1. Grab PAN from input
-        2. Encode each digit to binary (nibbles - four bits format)
-        3. Put into xorPAN format
+//    QByteArray xorPIN;
+//    xorPIN.append("00000100");
+//    QString pinDigit;
 
-        ## xorPAN is 64bit number used to encode PIN block
-        ## xorPAN is used to be xored with xorPIN
-        ##
-        ## xorPAN = | 0000 x4 | PAN1 | PAN2 | PAN3 | .... | PAN12 |
-        ##
-        ## Format 0 | 0s x4 | 12 right-most PAN digits excluding check digit |
-    */
+//    for(int i = 0 ; i < pinNumber.size() ; i++){
+//        pinDigit = QString::number(pinNumber.at(i).digitValue(), 2);
+//        switch (pinDigit.size()) {
+//            case 1:
+//                pinDigit = "000" + pinDigit;
+//                break;
+//            case 2:
+//                pinDigit = "00" + pinDigit;
+//                break;
+//            case 3:
+//                pinDigit = "0" + pinDigit;
+//                break;
+//        }
+//        xorPIN.append(pinDigit);
+//    }
+//    xorPIN.append("1111111111111111111111111111111111111111");
 
-    QByteArray xorPAN;
-    xorPAN.append("0000000000000000");
-    QString panNumber = "5500123400005904";
+//    /*
+//        1. Grab PAN from input
+//        2. Encode each digit to binary (nibbles - four bits format)
+//        3. Put into xorPAN format
 
-    panNumber.remove(0, 3);
-    panNumber.chop(1);
+//        ## xorPAN is 64bit number used to encode PIN block
+//        ## xorPAN is used to be xored with xorPIN
+//        ##
+//        ## xorPAN = | 0000 x4 | PAN1 | PAN2 | PAN3 | .... | PAN12 |
+//        ##
+//        ## Format 0 | 0s x4 | 12 right-most PAN digits excluding check digit |
+//    */
 
-    QString panDigit;
+//    QByteArray xorPAN;
+//    xorPAN.append("0000000000000000");
+//    QString panNumber = "5270820790587748";
 
-    for(int i = 0 ; i < panNumber.size() ; i++){
-        panDigit = QString::number(panNumber.at(i).digitValue(), 2);
-        switch (panDigit.size()) {
-            case 1:
-                panDigit = "000" + panDigit;
-                break;
-            case 2:
-                panDigit = "00" + panDigit;
-                break;
-            case 3:
-                panDigit = "0" + panDigit;
-                break;
-        }
-        xorPAN.append(panDigit);
-    }
+//    qDebug() << "PAN before encoding: " << panNumber;
 
-    qDebug () << "xorPIN: " << xorPIN;
-    qDebug () << "xorPAN: " << xorPAN;
+//    panNumber.remove(0, 3);
+//    panNumber.chop(1);
 
-    QByteArray digitContainer;
-    QByteArray xorResult;
+//    QString panDigit;
 
-    for(int i = 0; i < xorPIN.size() ; i++){
+//    for(int i = 0 ; i < panNumber.size() ; i++){
+//        panDigit = QString::number(panNumber.at(i).digitValue(), 2);
+//        switch (panDigit.size()) {
+//            case 1:
+//                panDigit = "000" + panDigit;
+//                break;
+//            case 2:
+//                panDigit = "00" + panDigit;
+//                break;
+//            case 3:
+//                panDigit = "0" + panDigit;
+//                break;
+//        }
+//        xorPAN.append(panDigit);
+//    }
 
-        digitContainer.append(xorPIN[i] ^ xorPAN[i]);
+//    qDebug () << "PIN after encoding: " << xorPIN;
+//    qDebug () << "PAN after encoding: " << xorPAN;
 
-        if(digitContainer.toHex() == "00"){
-            digitContainer = "0";
-        }else if(digitContainer.toHex() == "01"){
-            digitContainer = "1";
-        }
+//    QByteArray digitContainer;
+//    QByteArray xorResult;
 
-        xorResult.append(digitContainer);
+//    for(int i = 0; i < xorPIN.size() ; i++){
 
-        digitContainer.clear();
+//        digitContainer.append(xorPIN[i] ^ xorPAN[i]);
 
-    }
-    qDebug() << "xorRES: " << xorResult;
+//        if(digitContainer.toHex() == "00"){
+//            digitContainer = "0";
+//        }else if(digitContainer.toHex() == "01"){
+//            digitContainer = "1";
+//        }
 
-    testRSA(xorResult);
-}
+//        xorResult.append(digitContainer);
+
+//        digitContainer.clear();
+
+//    }
+//    qDebug() << "Result of Format 0 encoding: " << xorResult;
+
+//    testAES(xorResult);
+//}
 
 
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-//    Terminal w;
-//    w.show();
-//    testAES();
-//    encryptCombined();
-    PostRequest *post = new PostRequest();
-//    pinEncode();
+    Terminal w;
+    w.show();
+    // testRSA("mati");
+    // encryptCombined();
+    //pinEncode();
+
+
     return a.exec();
 }

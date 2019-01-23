@@ -3,13 +3,15 @@
 
 #include <QNetworkReply>
 #include <QObject>
+#include "transblock.h"
+
 
 
 
 class PostRequest : public QObject {
     Q_OBJECT
 public:
-    PostRequest();
+    PostRequest(int, QString, QString, QString, QString);
 public slots:
     void serviceRequestFinish(QNetworkReply*);
 };

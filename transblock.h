@@ -32,6 +32,7 @@ public:
     QString getTerminalID();
     QString getPAN();
     QString getPIN();
+    QString getPAN1();
 
 };
 

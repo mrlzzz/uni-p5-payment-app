@@ -18,6 +18,8 @@ public:
     explicit Terminal(QWidget *parent = nullptr);
     ~Terminal();
     void createTransBlock();
+    QString pinEncode(QString);
+    QString testAES(QByteArray);
 
 private:
     Ui::Terminal *ui;
@@ -26,6 +28,7 @@ private slots:
     void ClearPressed();
     void ConfirmPressed();
     void InitPressed();
+    void CardPressed();
 
 };
 

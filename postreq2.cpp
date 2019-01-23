@@ -1,4 +1,7 @@
 #include "postreq2.h"
+#include "transblock.h"
+#include "terminal.h"
+#include "ui_terminal.h"
 
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -7,23 +10,25 @@
 
 #include <QtNetwork/QNetworkAccessManager>
 
-PostRequest::PostRequest()
+PostRequest::PostRequest(int amount, QString cur, QString terID, QString PAN, QString PIN)
 {
-
-    qDebug() << "Hej, I work :)";
-
-    //Set up HTTP POST request destination
+    //Setup HTTP POST request destination
 
     QUrl serviceUrl = QUrl("https://payment-app-mrl.herokuapp.com/post");
     QNetworkRequest networkRequest(serviceUrl);
 
-    //Set up data to send
+    //Setup data to send
+
     QDate date = date.currentDate();
     QTime time = time.currentTime();
 
     QJsonObject json;
     json.insert("timestamp", date.toString() + " " + time.toString());
-    json.insert("pin", "1234");
+    json.insert("amount", amount);
+    json.insert("currency", cur);
+    json.insert("terminalID", terID);
+    json.insert("pan", PAN);
+    json.insert("pin", PIN);
     QJsonDocument jsonDoc(json);
     QByteArray postData = jsonDoc.toJson();
 
@@ -32,6 +37,9 @@ PostRequest::PostRequest()
     QByteArray postDataSize = QByteArray::number(postData.size());
     networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     networkRequest.setHeader(QNetworkRequest::ContentLengthHeader, postDataSize);
+
+
+
 
     //HTTPS Config
 
@@ -50,8 +58,6 @@ PostRequest::PostRequest()
 
 //    curl -X POST -d "{\"name\": \"Jack\", \"text\": \"HULLO\"}" -H "Content-Type: application/json" localhost:3000/post
 
-//    while(!reply->isFinished()){
-//    }
 
 
 //    QUrl params;
@@ -80,7 +86,6 @@ void PostRequest::serviceRequestFinish(QNetworkReply* rep) {
     qDebug() << "POST REQUEST SENT";
     qDebug() << rep->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     qDebug() << "Reply from server: " << rep->readAll();
-
 
 
 }
